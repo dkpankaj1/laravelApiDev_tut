@@ -8,12 +8,25 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Resources\V1\CustomerCollection;
 use App\Http\Resources\V1\CustomerResource;
 use App\Models\Customer;
+use Illuminate\Http\Request;
+use App\Filters\V1\CustomerFilters;
 
 class CustomerController extends Controller
 {
     
-    public function index(){
-        return new CustomerCollection(Customer::paginate());
+    public function index(Request $request)
+    {
+        $customerFilters = Customer::query();
+
+        $filter = new CustomerFilters();
+        
+        $queryFilter = $filter->transform($request);
+
+        if(count($queryFilter) == 0){
+            return new CustomerCollection(Customer::paginate());
+        }
+
+        return new CustomerCollection(Customer::where($queryFilter)->paginate()->appends($request->query()));
     }
 
     public function create()
