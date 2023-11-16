@@ -16,3 +16,26 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get("get-token",function(){
+    
+    $crad = [
+        'email' => 'admin@email.com',
+        'password' => 'password'
+    ];
+
+    if(auth()->attempt($crad)){
+        
+        $user = auth()->user();
+        $user->tokens()->delete();
+        
+        return [
+            "basic" =>  $user->createToken('api-token-basic')->plainTextToken
+        ];       
+
+    }else{
+        return json_encode(['status'=> 'error','msg'=> 'login failled!!']); 
+    }
+
+});
