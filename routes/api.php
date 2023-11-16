@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\CustomerController;
 use App\Http\Controllers\API\V1\InvoiceController;
+use App\Http\Controllers\API\V1\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,11 +17,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::group(['prefix' =>'v1','namespace' => 'App\Http\Controllers\API\V1'],function(){
+Route::group(['prefix' =>'v1','namespace' => 'App\Http\Controllers\API\V1','middleware' =>'auth:sanctum'],function(){
     Route::apiResource('customer',CustomerController::class);
     Route::apiResource('invoice',InvoiceController::class);
+    Route::apiResource('user',UsersController::class);
 });
